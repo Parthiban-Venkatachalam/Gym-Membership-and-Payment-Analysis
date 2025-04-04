@@ -1,0 +1,74 @@
+CREATE DATABASE gym_membership;
+
+use gym_membership;
+
+select * from gym_membership;
+
+describe gym_membership;
+
+alter table gym_membership modify column drink_abo tinyint;
+select birthday from gym_membership;
+
+SELECT birthday FROM gym_membership LIMIT 1000;
+
+SET SQL_SAFE_UPDATES = 0;
+
+SET SQL_SAFE_UPDATES = 1;
+
+UPDATE gym_membership
+SET birthday = STR_TO_DATE(birthday, '%d-%m-%Y')
+WHERE STR_TO_DATE(birthday, '%d-%m-%Y') IS NOT NULL;
+
+ALTER TABLE gym_membership  
+MODIFY COLUMN birthday DATE;
+
+UPDATE gym_membership  
+SET drink_abo =  
+    CASE  
+        WHEN drink_abo = 'TRUE' THEN 1  
+        WHEN drink_abo = 'FALSE' THEN 0  
+        ELSE NULL  
+    END;
+
+SELECT COUNT(*) AS null_count 
+FROM gym_membership  
+WHERE birthday is NULL;
+
+SELECT COUNT(*) AS blank_count
+FROM gym_membership  
+WHERE name_personal_trainer = '';
+
+UPDATE gym_membership  
+SET name_personal_trainer = 'No Trainer'  
+WHERE name_personal_trainer = '';
+
+select * from gym_membership;
+
+CREATE TABLE payment_method (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    payment_transaction_method ENUM('cash', 'card') NOT NULL,
+    paid_amount DECIMAL(10,2) NOT NULL
+);
+
+INSERT INTO payment_method (payment_transaction_method, paid_amount)
+SELECT 
+    CASE WHEN RAND() > 0.5 THEN 'cash' ELSE 'card' END,
+    FLOOR(RAND() * (15000 - 5000 + 1)) + 5000
+FROM 
+    (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL 
+    SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) AS t1,
+    (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL 
+    SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) AS t2,
+    (SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL 
+    SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10) AS t3;
+
+select * from payment_method;
+select * from gym_membership;
+
+select gym_membership.id,gym_membership.gender,gym_membership.birthday,gym_membership.Age,gym_membership.abonoment_type,
+gym_membership.visit_per_week,gym_membership.days_per_week,gym_membership.attend_group_lesson,gym_membership.fav_group_lesson,
+gym_membership.avg_time_check_in,gym_membership.avg_time_check_out,gym_membership.avg_time_in_gym,gym_membership.drink_abo,
+gym_membership.fav_drink,gym_membership.personal_training,gym_membership.name_personal_trainer,gym_membership.uses_sauna,
+payment_method.id,payment_method.payment_transaction_method,payment_method.paid_amount from 
+gym_membership join payment_method on gym_membership.id=payment_method.id;
+
